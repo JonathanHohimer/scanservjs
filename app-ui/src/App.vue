@@ -25,7 +25,6 @@
 <script>
 
 import Constants from './classes/constants';
-import ManifestBuilder from './classes/manifest-builder';
 import Storage from './classes/storage';
 import Navigation from './components/Navigation.vue';
 import { useTheme } from 'vuetify';
@@ -48,15 +47,6 @@ export default {
         : Constants.Themes.Light;
     }
     vuetifyTheme.global.name.value = theme;
-    const manifest = ManifestBuilder.create()
-      .withDark(theme === Constants.Themes.Dark)
-      .withStorage(storage)
-      .build();
-
-    const element = document.createElement('link');
-    element.setAttribute('rel', 'manifest');
-    element.setAttribute('href', `data:manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`);
-    document.querySelector('head').appendChild(element);
   },
 
   data() {

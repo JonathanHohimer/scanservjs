@@ -32,6 +32,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase image name
+        run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: New commit count
         run: echo "NEW_COMMIT_COUNT=$(git log --oneline --since '24 hours ago' | wc -l)" >> $GITHUB_ENV
 
@@ -40,7 +43,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/scanservjs:staging
+          tags: ghcr.io/${{ env.OWNER }}/scanservjs:staging
           target: scanservjs-core
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
@@ -55,8 +58,8 @@ jobs:
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/scanservjs:release-${{ steps.get_version.outputs.VERSION }}
-            ghcr.io/${{ github.repository_owner }}/scanservjs:${{ steps.get_version.outputs.VERSION }}
-            ghcr.io/${{ github.repository_owner }}/scanservjs:latest
+            ghcr.io/${{ env.OWNER }}/scanservjs:release-${{ steps.get_version.outputs.VERSION }}
+            ghcr.io/${{ env.OWNER }}/scanservjs:${{ steps.get_version.outputs.VERSION }}
+            ghcr.io/${{ env.OWNER }}/scanservjs:latest
           target: scanservjs-core
           platforms: linux/amd64,linux/arm64,linux/arm/v7
